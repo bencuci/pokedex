@@ -8,10 +8,7 @@ import (
 )
 
 func (c *Client) ListEncounters(locationName string) (LocationResp, error) {
-	url := baseURL + "/location-area"
-	if locationName != "" {
-		url += "/" + locationName
-	}
+	url := baseURL + "/location-area/" + locationName
 
 	val, exists := c.pokecache.Get(url)
 	if exists {

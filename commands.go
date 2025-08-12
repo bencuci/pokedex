@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"github.com/bencuci/pokedex/internal/pokeapi"
+	"math/rand"
 	"os"
 )
 
@@ -37,6 +39,16 @@ func getCommands() map[string]cliCommand {
 			name:        "explore [location_name]",
 			description: "Lists all of the pokemons at the given location",
 			callback:    commandExplore,
+		},
+		"catch": {
+			name:        "catch [pokemon_name]",
+			description: "Try to catch the pokemon",
+			callback:    commandCatch,
+		},
+		"pokedex": {
+			name:        "pokedex",
+			description: "Show pokemons in your pokedex",
+			callback:    commandPokedex,
 		},
 	}
 }
@@ -98,5 +110,45 @@ func commandExplore(cfg *config, locationName string) error {
 		fmt.Println(encounter.Pokemon.Name)
 	}
 
+	return nil
+}
+
+var pokedex = make(map[string]pokeapi.Pokemon)
+
+func commandCatch(cfg *config, pokemonName string) error {
+	if _, exists := pokedex[pokemonName]; exists {
+		fmt.Println("You already have " + pokemonName + " in your pokedex")
+		return nil
+	}
+
+	fmt.Println("Throwing a Pokeball at " + pokemonName + "...")
+	pokemon, err := cfg.pokeapiClient.GetPokemon(pokemonName)
+	if err != nil {
+		return err
+	}
+
+	diceRoll := rand.Intn(100)
+
+	if diceRoll <= 49 {
+		fmt.Println(pokemonName + " escaped!")
+		return nil
+	}
+
+	pokedex[pokemonName] = pokemon
+	fmt.Println(pokemonName + " was caught!")
+	return nil
+}
+
+func commandPokedex(cfg *config, argument string) error {
+	fmt.Println("Pokemons in your pokedex:")
+
+	if len(pokedex) == 0 {
+		fmt.Println("Your pokedex is empty")
+		return nil
+	}
+
+	for name := range pokedex {
+		fmt.Println(name)
+	}
 	return nil
 }
