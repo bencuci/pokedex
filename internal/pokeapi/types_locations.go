@@ -4,8 +4,10 @@ type RespShallowLocations struct {
 	Count    int     `json:"count"`
 	Next     *string `json:"next"`
 	Previous *string `json:"previous"`
-	Results  []struct {
-		Name string `json:"name"`
-		URL  string `json:"URL"`
-	} `json:"results"`
+	Results  Results `json:"results"`
+}
+
+type Results []struct {
+	Name string `json:"name"`
+	URL  string `json:"URL"`
 }

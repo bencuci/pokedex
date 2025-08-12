@@ -2,11 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/bencuci/pokedex/internal/pokeapi"
 	"os"
 )
-
-var supportedCommands map[string]cliCommand
 
 type cliCommand struct {
 	name        string
@@ -57,24 +54,6 @@ func commandHelp(cfg *config) error {
 	}
 
 	return nil
-}
-
-type lAreaResponse struct {
-	Count    int     `json:"count"`
-	Next     string  `json:"next"`
-	Previous *string `json:"previous"`
-	Results  []lArea `json:"results"`
-}
-
-type lArea struct {
-	Name string `json:"name"`
-	Url  string `json:"url"`
-}
-
-type config struct {
-	pokeapiClient pokeapi.Client
-	nextURL       *string
-	prevURL       *string
 }
 
 func commandMapf(cfg *config) error {
