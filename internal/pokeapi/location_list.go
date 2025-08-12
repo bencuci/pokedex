@@ -14,7 +14,7 @@ func (c *Client) ListLocations(pageURL *string) (RespShallowLocations, error) {
 
 	val, exists := c.pokecache.Get(url)
 	if exists {
-		return unmarshal(val)
+		return unmarshalLocation(val)
 	}
 
 	req, err := http.NewRequest("GET", url, nil)
@@ -34,10 +34,10 @@ func (c *Client) ListLocations(pageURL *string) (RespShallowLocations, error) {
 	}
 
 	c.pokecache.Add(url, data)
-	return unmarshal(data)
+	return unmarshalLocation(data)
 }
 
-func unmarshal(byteData []byte) (RespShallowLocations, error) {
+func unmarshalLocation(byteData []byte) (RespShallowLocations, error) {
 	var locationsResp RespShallowLocations
 	if err := json.Unmarshal(byteData, &locationsResp); err != nil {
 		return RespShallowLocations{}, err
